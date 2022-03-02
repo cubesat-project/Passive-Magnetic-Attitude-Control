@@ -1,4 +1,5 @@
 # Passive-Magnetic-Attitude-Control
+## This repository is a copy of McMaster NEUDOSE's ADCS simulation code modified for Western's Ukpik 1 mission
 The physical data used for simulation can be found at : https://drive.google.com/drive/folders/194ralzQNBT4iwupcq72sTHUX19cXKTNB?usp=sharing
 
 For more information on the physics and some sample results, see: https://confluence.mcmasterneudose.ca/x/BAChAg
