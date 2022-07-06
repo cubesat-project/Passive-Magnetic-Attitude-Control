@@ -3,22 +3,34 @@ clear all;
 tic;
 
 % Simulation parameters
-days=14;
+days=60;
 tstep=20;
 rho_year = 2022; % Year for air density (2022,2023,2020,2014)
 w0=[2;2;2]*pi/180; % nanoracks worst case scenario
 
+disp('design params')
+
 % Physical Design Parameters
-m = 0.32; % Possible from combination of magnets from KJ
-hyst_l = 0.05; % Orignal Length of hysteresis rods in m
+% m = 0.32; % Possible from combination of magnets from KJ
+% hyst_l = 0.05; % Orignal Length of hysteresis rods in m
+% hyst_d = 0.001; % Diameter of hysteresis rods in m
+% nrods = 2; % rods per axis
+% vol=nrods*0.25*pi*hyst_l*hyst_d^2; % Volume of hysteresis rods
+% 
+% mres=[-0.0046;-0.0046;0.000575]; %residual magnetic moment in A*m^2
+
+m = 0.422;  % for 2 inch Bar Magnet. Replicated from NEUDOSE: possible from combinaions of magnets from [K&J Magnetics Inc]
+%m =  0.317;  % for 1.5 inch bar magnet
+hyst_l = 0.05;
 hyst_d = 0.001; % Diameter of hysteresis rods in m
 nrods = 2; % rods per axis
 vol=nrods*0.25*pi*hyst_l*hyst_d^2; % Volume of hysteresis rods
 
-mres=[-0.0046;-0.0046;0.000575]; %residual magnetic moment in A*m^2
-
+% mres=[-0.0046;-0.0046;0.000575]; %residual magnetic moment in A*m^2
+mres=[0.00;0.00;0.00];
 % --------------------------------------------------------
 
+disp('load data')
 % Loading in Data
 [data_fname,rho_fname] = file_selec(days,tstep,rho_year);
 data=cell2mat(struct2cell(load(data_fname))); 
@@ -27,6 +39,7 @@ sun=data(:,14:16).*data(:,17);
 dens=cell2mat(struct2cell(load(rho_fname)));
 % --------------------------------------------------------
 
+disp('data loaded')
      
 % Define constants
 period=3600+32*60+39; % orbital period from https://keisan.casio.com/exec/system/1224665242
@@ -39,6 +52,8 @@ k=(1/Hc)*tan(0.5*pi*Br/Bs);
 rad2deg=180/pi;
 tspan=[0 days*86400];
 % --------------------------------------------------------
+
+disp('define constants')
 
 % Initial values for ODE solver
 % att_init=[15.5;-1.2;-30]*pi/180; %initial beta  0.0555 deg
@@ -71,11 +86,14 @@ options=odeset('RelTol',1e-12,'AbsTol',1e-12,'Stats','on');
 % options=odeset('RelTol',1e-7,'AbsTol',1e-7,'Stats','on');
 % --------------------------------------------------------
 
+disp('Run simulations')
+
 % Run simulations
 [T,X]=ode113quat(@(t,x) eqset(x,t,time,B_in,Bdot,pos,sun,vel,dens,m,hyst_l,hyst_d,nrods,mres),tspan,init,options);
 % [T,X]=ode420(@(t,x) eqset(x,t,time,B_in,Bdot,pos,sun,vel,dens,m,hyst_l,hyst_d,nrods,mres),tspan,init,options);
 % [T,X]=odeRK4(@(t,x) eqset(x,t,time,B_in,Bdot,pos,sun,vel,dens,m,hyst_l,hyst_d,nrods,mres),tspan,init,0.1);
 
+disp('Output data from simulations')
 
 % Output data from simulation
 w=X(:,1:3); % Angular velocities
@@ -83,6 +101,8 @@ q=X(:,4:7); % Attitude quaternions
 BH=X(:,8:10); % Hysteresis magnetic field
 t_days=T/86400; % Time in days
 wdeg=(180/pi)*w; % Convert angular rates to degrees/second
+
+disp('save data')
 
 % Saving data
 if days<20
@@ -113,6 +133,8 @@ else
     save(w_save_name,'w_save');
 end
 % --------------------------------------------------------
+
+disp('plot')
 
 % PLOTTING SECTION
 % Plot angular rates
@@ -196,6 +218,8 @@ fig.Color = [1 1 1];
 box off
 grid on
 movegui('north');
+
+disp('energy analysis')
 
 %Energy analyis
 % E_k=dot((w.^2),([0.0065 0.0065 0.0029].*ones(length(T),3)),2);
