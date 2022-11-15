@@ -6,7 +6,11 @@ function T=CalcT(B,BH,w,pos,sun,vel,rho,m,hyst_l,hyst_d,nrods,mres)
 S=(1e-4)*[200;200;100];% area vector on each face
 % S=[0.02;0.02;0.01];% area vector on each face
 
-rd=[-0.00244;0.00025;-0.00432];% distance from centre of mass to geometric centre 
+%rd=[-0.00244;0.00025;-0.00432];% distance from centre of mass to geometric
+%centre (McMaster)
+%rd=[0.00515;0.01400;-0.00638];
+%rd=[0.00141;0.00006;-0.002];
+rd = [0.00112;0.00011;0.11281]; %updated for new COM value (Fall 2022)
 
 % Bar Magnet 
 mbar=[0;0;m];
