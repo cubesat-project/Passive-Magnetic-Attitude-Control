@@ -3,7 +3,7 @@ clear all;
 tic;
 
 % Simulation parameters
-days=60;
+days=28;
 tstep=20;
 rho_year = 2022; % Year for air density (2022,2023,2020,2014)
 w0=[2;2;2]*pi/180; % nanoracks worst case scenario
@@ -22,6 +22,7 @@ disp('design params')
 m = 0.422;  % for 2 inch Bar Magnet. Replicated from NEUDOSE: possible from combinaions of magnets from [K&J Magnetics Inc]
 %m =  0.317;  % for 1.5 inch bar magnet
 hyst_l = 0.05;
+%hyst_l = 0.045; %updated length based on mounts requiring redction in length
 hyst_d = 0.001; % Diameter of hysteresis rods in m
 nrods = 2; % rods per axis
 vol=nrods*0.25*pi*hyst_l*hyst_d^2; % Volume of hysteresis rods
